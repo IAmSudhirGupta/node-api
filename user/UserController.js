@@ -1,14 +1,13 @@
 var express = require('express');
 var router = express.Router();
 var bodyParser = require('body-parser');
-
+var verifyToken = require('../auth/verifyToken');
 router.use(bodyParser.urlencoded({ extended: true }));
 router.use(bodyParser.json());
 var User = require('./User');
 
 // CREATES A NEW USER
 router.post('/', function(req, res) {
-    console.log(req.body);
     User.create({
             password: req.body.password,
             userName: req.body.userName,
@@ -29,7 +28,7 @@ router.post('/', function(req, res) {
 });
 
 // RETURNS ALL THE USERS IN THE DATABASE
-router.get('/', function(req, res) {
+router.get('/', verifyToken, function(req, res) {
     User.find({}, function(err, users) {
         if (err) return res.status(500).send("There was a problem finding the users.");
         res.status(200).send(users);
@@ -49,7 +48,7 @@ router.get('/:id', function(req, res) {
 router.delete('/:id', function(req, res) {
     User.findByIdAndRemove(req.params.id, function(err, user) {
         if (err) return res.status(500).send("There was a problem deleting the user.");
-        res.status(200).send("User: " + user.name + " was deleted.");
+        res.status(200).send("User: " + user.userName + " was deleted.");
     });
 });
 
