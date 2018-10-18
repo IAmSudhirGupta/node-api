@@ -10,6 +10,12 @@ router.use(bodyParser.json());
 var User = require('../user/User');
 
 router.post('/register', function(req, res) {
+    // User.findOne({ email: req.body.email }, function(err, user) {
+    //     if (user) return res.status(400).send("This email is already exist.");
+    // });
+    // User.findOne({ userName: req.body.userName }, function(err, user) {
+    //     if (user) return res.status(400).send("This username is already exist.");
+    // });
     var hashedPassword = bcrypt.hashSync(req.body.password, 8);
     User.create({
             password: hashedPassword,
@@ -41,7 +47,6 @@ router.get('/me', verifyToken, function(req, res, next) {
     });
 });
 router.post('/login', function(req, res) {
-
     User.findOne({ email: req.body.email }, function(err, user) {
         if (err) return res.status(500).send('Error on the server.');
         if (!user) return res.status(404).send('No user found.');
