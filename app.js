@@ -18,6 +18,6 @@ app.use(function(req, res, next) {
 var AuthController = require('./auth/AuthController');
 app.use('/api/auth', AuthController);
 var UserController = require('./user/UserController');
-app.use('/users', UserController);
+app.use('/api/users', UserController);
 
 module.exports = app;

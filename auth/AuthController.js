@@ -10,34 +10,32 @@ router.use(bodyParser.json());
 var User = require('../user/User');
 
 router.post('/register', function(req, res) {
-    // User.findOne({ email: req.body.email }, function(err, user) {
-    //     if (user) return res.status(400).send("This email is already exist.");
-    // });
-    // User.findOne({ userName: req.body.userName }, function(err, user) {
-    //     if (user) return res.status(400).send("This username is already exist.");
-    // });
-    var hashedPassword = bcrypt.hashSync(req.body.password, 8);
-    User.create({
-            password: hashedPassword,
-            userName: req.body.userName,
-            firstName: req.body.firstName,
-            lastName: req.body.lastName,
-            phone: req.body.phone,
-            email: req.body.email,
-            gender: req.body.gender,
-            dob: req.body.dob,
-            country: req.body.country,
-            companyName: req.body.companyName,
-            address: req.body.address
-        },
-        function(err, user) {
-            if (err) return res.status(500).send("There was a problem registering the user.")
-                // create a token
-            var token = jwt.sign({ id: user._id }, config.secret, {
-                expiresIn: 86400 // expires in 24 hours
+    User.findOne({ email: req.body.email }, function(err, user) {
+        if (user) return res.status(400).send("This email is already exist.");
+
+        var hashedPassword = bcrypt.hashSync(req.body.password, 8);
+        User.create({
+                password: hashedPassword,
+                userName: req.body.userName,
+                firstName: req.body.firstName,
+                lastName: req.body.lastName,
+                phone: req.body.phone,
+                email: req.body.email,
+                gender: req.body.gender,
+                dob: req.body.dob,
+                country: req.body.country,
+                companyName: req.body.companyName,
+                address: req.body.address
+            },
+            function(err, user) {
+                if (err) return res.status(500).send("There was a problem registering the user.")
+                    // create a token
+                var token = jwt.sign({ id: user._id }, config.secret, {
+                    expiresIn: 86400 // expires in 24 hours
+                });
+                res.status(200).send({ auth: true, token: token });
             });
-            res.status(200).send({ auth: true, token: token });
-        });
+    });
 });
 router.get('/me', verifyToken, function(req, res, next) {
     User.findById(req.userId, { password: 0 }, function(err, user) {
@@ -52,11 +50,33 @@ router.post('/login', function(req, res) {
         if (!user) return res.status(404).send('No user found.');
         var passwordIsValid = bcrypt.compareSync(req.body.password, user.password);
         if (!passwordIsValid) return res.status(401).send({ auth: false, token: null });
+
         var token = jwt.sign({ id: user._id }, config.secret, {
             expiresIn: 86400 // expires in 24 hours
         });
-        res.status(200).send({ auth: true, token: token });
+        res.status(200).send({ auth: true, token: token, data:user });
     });
+});
+router.post('/reset-password', verifyToken,function(req, res) {
+    console.log(req.body);
+    User.findById(req.body.id, function(err, user) {
+        if (err) return res.status(500).send("There was a problem finding the user.");
+        if (!user) return res.status(404).send("No user found.");
+
+        if(req.body.oldPassword === req.body.newPassword) return res.status(400).send("new password and old password are same.")
+
+        var passwordIsValid = bcrypt.compareSync(req.body.oldPassword, user.password);
+        if (!passwordIsValid) return res.status(400).send("Old password is wrong.");
+
+        var hashedPassword = bcrypt.hashSync(req.body.newPassword, 8);
+        user.password = hashedPassword;
+        user.save(function (err, user) {
+            if (err) return res.status(500).send("There was a problem updating the password.");
+            res.status(200).send({ status: "success", message: "password changed successfully." });
+        });
+        
+    });
+    
 });
 router.get('/logout', function(req, res) {
     res.status(200).send({ auth: false, token: null });
