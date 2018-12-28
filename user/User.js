@@ -10,7 +10,7 @@ var UserSchema = new mongoose.Schema({
     country: { type: String, required: false },
     companyName: { type: String, required: false },
     address: { type: String, required: false },
-    password: { type: String, required: true }
+    password: { type: String, required: false }
 });
 mongoose.model('User', UserSchema);
 
