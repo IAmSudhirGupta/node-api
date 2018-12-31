@@ -21,12 +21,13 @@ router.post('/image', function(req, res) {
     if(!extensions.includes(extension)) {
         return res.status(400).send(extensions.join('|')+' extension supproted only!');
     }
-    sampleFile.mv('uploads/'+sampleFile.name, function(err) {
-        if (err)
-        return res.status(500).send(err);
+    // sampleFile.mv('uploads/'+sampleFile.name, function(err) {
+    //     if (err)
+    //     return res.status(500).send(err);
 
-        res.send('File uploaded!');
-    });
+    //     res.send('File uploaded!');
+    // });
+    res.send('File uploaded!');
   });
   router.post('/excel', function(req, res) {
     if(req.files === undefined) {
@@ -43,12 +44,13 @@ router.post('/image', function(req, res) {
         return res.status(400).send(extensions.join('|')+' extension supproted only!');
     }
 
-    sampleFile.mv('uploads/'+sampleFile.name, function(err) {
-        if (err)
-        return res.status(500).send(err);
+    // sampleFile.mv('uploads/'+sampleFile.name, function(err) {
+    //     if (err)
+    //     return res.status(500).send(err);
 
-        res.send('File uploaded!');
-    });
+    //     res.send('File uploaded!');
+    // });
+    res.send('File uploaded!');
   });
   router.post('/pdf', function(req, res) {
     if(req.files === undefined) {
@@ -65,12 +67,13 @@ router.post('/image', function(req, res) {
         return res.status(400).send(extensions.join('|')+' extension supproted only!');
     }
 
-    sampleFile.mv('uploads/'+sampleFile.name, function(err) {
-        if (err)
-        return res.status(500).send(err);
+    // sampleFile.mv('uploads/'+sampleFile.name, function(err) {
+    //     if (err)
+    //     return res.status(500).send(err);
 
-        res.send('File uploaded!');
-    });
+    //     res.send('File uploaded!');
+    // });
+    res.send('File uploaded!');
   });
 
   router.post('/all', function(req, res) {
@@ -83,12 +86,13 @@ router.post('/image', function(req, res) {
 
     let sampleFile = req.files.files;
 
-    sampleFile.mv('uploads/'+sampleFile.name, function(err) {
-        if (err)
-        return res.status(500).send(err);
+    // sampleFile.mv('uploads/'+sampleFile.name, function(err) {
+    //     if (err)
+    //     return res.status(500).send(err);
 
-        res.send('File uploaded!');
-    });
+    //     res.send('File uploaded!');
+    // });
+    res.send('File uploaded!');
   });
-  
+
 module.exports = router;

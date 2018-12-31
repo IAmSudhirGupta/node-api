@@ -5,6 +5,7 @@ var db = require('./db');
 const fileUpload = require('express-fileupload');
 
 app.use(fileUpload());
+
 app.use(function(req, res, next) {
     // Website you wish to allow to connect
     res.setHeader('Access-Control-Allow-Origin', '*');
