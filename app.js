@@ -23,12 +23,21 @@ var UserController = require('./user/UserController');
 app.use('/api/users', UserController);
 
 app.post('/api/users/upload', function(req, res) {
+    console.log(req.files);
     if(req.files === undefined) {
         return res.status(400).send('No files were uploaded.');
     }
     if (Object.keys(req.files).length == 0) {
       return res.status(400).send('No files were uploaded.');
     }
-    res.send('File uploaded!');
+
+    let sampleFile = req.files.files;
+    
+    sampleFile.mv('uploads/'+sampleFile.name, function(err) {
+        if (err)
+        return res.status(500).send(err);
+
+        res.send('File uploaded!');
+    });
   });
 module.exports = app;
