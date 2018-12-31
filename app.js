@@ -3,6 +3,7 @@ var express = require('express');
 var app = express();
 var db = require('./db');
 const fileUpload = require('express-fileupload');
+
 app.use(fileUpload());
 app.use(function(req, res, next) {
     // Website you wish to allow to connect
@@ -17,27 +18,11 @@ app.use(function(req, res, next) {
     // Pass to next layer of middleware
     next();
 });
-var AuthController = require('./auth/AuthController');
+var AuthController = require('./src/auth/AuthController');
 app.use('/api/auth', AuthController);
-var UserController = require('./user/UserController');
+var UserController = require('./src/user/UserController');
 app.use('/api/users', UserController);
+var UploadController =  require('./src/UploadController');
+app.use('/api/upload', UploadController);
 
-app.post('/api/users/upload', function(req, res) {
-    console.log(req.files);
-    if(req.files === undefined) {
-        return res.status(400).send('No files were uploaded.');
-    }
-    if (Object.keys(req.files).length == 0) {
-      return res.status(400).send('No files were uploaded.');
-    }
-
-    let sampleFile = req.files.files;
-    
-    sampleFile.mv('uploads/'+sampleFile.name, function(err) {
-        if (err)
-        return res.status(500).send(err);
-
-        res.send('File uploaded!');
-    });
-  });
 module.exports = app;
