@@ -60,7 +60,6 @@ router.post('/login', function(req, res) {
     });
 });
 router.post('/reset-password', verifyToken,function(req, res) {
-    console.log(req.body);
     User.findById(req.body.id, function(err, user) {
         if (err) return res.status(500).send({status:"error", message:"There was a problem finding the user."});
         if (!user) return res.status(404).send({status:"error", message:"No user found."});
@@ -76,12 +75,55 @@ router.post('/reset-password', verifyToken,function(req, res) {
             if (err) return res.status(500).send({status:"error", message:"There was a problem updating the password."});
             res.status(200).send({ status: "success", message: "password changed successfully." });
         });
-        
     });
-    
 });
 router.get('/logout', function(req, res) {
     res.status(200).send({ auth: false, token: null });
+});
+
+router.post('/sendotp', function(req, res) {
+    User.findOne({ email: req.body.email }, function(err, user) {
+
+        if (err) return res.status(500).send({status:"error", message:'Error on the server.'});
+        if (!user) return res.status(404).send({status:"error", message:'No user found.'});
+
+        //create otp and trigger to email;
+        delete user.password;
+        res.status(200).send(user);
+    });
+});
+
+router.post('/verifyotp/:id', function(req, res) {
+    User.findById(req.params.id, function(err, user) {
+        if (err) return res.status(500).send({status:"error", message:"There was a problem finding the user."});
+        if (!user) return res.status(404).send({status:"error", message:"No user found."});
+        
+        if(!req.body.otp) {
+            return res.status(400).send({status:"error", message:"OTP now found."});
+        }
+
+        let otp = req.body.otp;
+
+        res.status(200).send({
+            status:"success", "message": "OTP verified successfully"
+        });
+    });
+});
+
+router.post('/setpassword', function(req, res) {
+    User.findById(req.body.id, function(err, user) {
+        if (err) return res.status(500).send({status:"error", message:"There was a problem finding the user."});
+        if (!user) return res.status(404).send({status:"error", message:"No user found."});
+
+        if (!req.body.newPassword) return res.status(400).send({status:"error", message:"Password is not provided."});
+
+        var hashedPassword = bcrypt.hashSync(req.body.newPassword, 8);
+        user.password = hashedPassword;
+        user.save(function (err, user) {
+            if (err) return res.status(500).send({status:"error", message:"There was a problem updating the password."});
+            res.status(200).send({ status: "success", message: "password changed successfully." });
+        });
+    });
 });
 
 //middleware function
