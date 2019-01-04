@@ -110,8 +110,8 @@ router.post('/verifyotp/:id', function(req, res) {
     });
 });
 
-router.post('/setpassword', function(req, res) {
-    User.findById(req.body.id, function(err, user) {
+router.post('/setpassword/:id', function(req, res) {
+    User.findById(req.params.id, function(err, user) {
         if (err) return res.status(500).send({status:"error", message:"There was a problem finding the user."});
         if (!user) return res.status(404).send({status:"error", message:"No user found."});
 
