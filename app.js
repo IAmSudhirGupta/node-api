@@ -23,6 +23,13 @@ var AuthController = require('./src/auth/AuthController');
 app.use('/api/auth', AuthController);
 var UserController = require('./src/user/UserController');
 app.use('/api/users', UserController);
+var QuestionController = require('./src/exam/QuestionController');
+app.use('/api/questions', QuestionController);
+var QuestionSetController = require('./src/exam/QuestionSetController');
+app.use('/api/questionSet', QuestionSetController);
+var CandidateController = require('./src/exam/CandidateController');
+app.use('/api/candidates', CandidateController);
+
 var UploadController =  require('./src/UploadController');
 app.use('/api/upload', UploadController);
 
