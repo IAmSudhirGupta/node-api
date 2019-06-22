@@ -19,6 +19,7 @@ app.use(function(req, res, next) {
     // Pass to next layer of middleware
     next();
 });
+
 var AuthController = require('./src/auth/AuthController');
 app.use('/api/auth', AuthController);
 var UserController = require('./src/user/UserController');
