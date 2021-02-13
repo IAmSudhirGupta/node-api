@@ -1,3 +1,4 @@
-.env
+base-app/package-lock.json
+flair/package-lock.json
 base-api/node_modules/
 flair/node_modules/ 
