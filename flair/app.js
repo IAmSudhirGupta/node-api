@@ -19,7 +19,9 @@ app.use(function(req, res, next) {
     // Pass to next layer of middleware
     next();
 });
-
+app.get('/', function(req, res) {
+    res.status(200).send({"status": "success", "message": "REST API - flair..."});
+});
 var AuthController = require('./src/auth/AuthController');
 app.use('/api/auth', AuthController);
 var UserController = require('./src/user/UserController');
